@@ -46,19 +46,13 @@ public:
 	};
 	void push_back (T elem)
 	{
-		if (size_t(COEFFICIENT*capacity)>MAX_SIZE) throw std::logic_error("Impossible to push back");
-		else {
-			if ((size+1)>capacity) {
+		if (size==MAX_SIZE) throw std::logic_error("Impossible to push back");
+		if ((size+1)>capacity) {
 		       capacity=size_t(COEFFICIENT*capacity)+1;
 			   resize(capacity);
-			   data[size]=elem;
-			   size++;
 		    }
-		    else {
-			     data[size]=elem;
-			     size++;
-		    }
-		}
+	     data[size]=elem;
+		 size++;
 	};
 	void pop_back()
 	{
@@ -70,20 +64,7 @@ public:
 	};
 	void push_front (T elem)
 	{
-		if ((size+1)>capacity) {
-		    capacity=size_t(COEFFICIENT*capacity)+1;
-			resize(capacity);
-			size++;
-			for (size_t i=size-1; i>=1; i--)
-				data[i]=data[i-1];
-			data[0]=elem;
-		}
-		else {
-			size++;
-			for (size_t i=size-1; i>=1; i--)
-				data[i]=data[i-1];
-			data[0]=elem;
-		}
+		this->insert(elem,0);
 	};
 	void pop_front ()
 	{
@@ -94,24 +75,12 @@ public:
 	};
 	void resize (size_t s)
 	{
-		if (s!=size) {
-			Vector<T> temp(capacity);
-			size_t size_temp=size;
-			for (size_t i=0; i<size; i++)
-				temp.data[i]=data[i];
-			delete[] data;
-			size=s;
-			capacity=size_t(COEFFICIENT*size)+1;
-			data = new T[capacity];
-			if (size>size_temp) {
-			for (size_t i=0; i<size_temp; i++)
-				data[i]=temp.data[i];
-			for (size_t i=size_temp; i<size; i++)
-				data[i]=0;
-			}
-			else for (size_t i=0; i<size; i++)
-				     data[i]=temp.data[i];
-		}
+		T* temp = new T[s];
+        for (size_t i=0; i<capacity; i++)
+             temp[i]=data[i];
+        delete[] data;
+        data = temp;
+        capacity=s;
 	};
 	T& operator[] (size_t index) 
 	{
