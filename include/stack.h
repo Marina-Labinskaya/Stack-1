@@ -199,7 +199,8 @@ public:
 	void pop()
 	{
 		if (this->empty()==true) throw std::logic_error ("Impossible to pop");
-		start++;
+		if (start==data+capacity-1) start=data;
+		else start++;
 		size--;
 	};
 	void resize (size_t s)
