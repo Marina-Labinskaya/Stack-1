@@ -18,6 +18,7 @@ public:
 	~Vector() 
 	{delete[] data; data=nullptr; size=0; capacity=0;};
 	size_t GetSize() { return size; };
+	size_t GetCapacity() { return capacity;};
 	Vector (int n)
 	{
 		if ((n<0)||(n>MAX_SIZE)) throw std::logic_error ("Invalid size");
@@ -46,15 +47,15 @@ public:
 		       capacity=size_t(COEFFICIENT*capacity)+1;
 			   resize(capacity);
 		    }
-	     data[size]=elem;
 		 size++;
+	     data[size-1]=elem; 
 	};
 	void pop_back()
 	{
 		if (size==0) throw std::logic_error ("Impossible to pop");
 		else {
-	         size--;
-	         data[size]=0;
+	         data[size-1]=0;
+			 size--;
 		};
 	};
 	void push_front (T elem)
@@ -70,8 +71,8 @@ public:
 	};
 	void resize (size_t s)
 	{
-		T* temp=new T[s];
-        for (size_t i=0; i<capacity; i++)
+	    T* temp=new T[s];
+        for (size_t i=0; i<size; i++)
              temp[i]=data[i];
         delete[] data;
         data=temp;
@@ -238,7 +239,7 @@ public:
 	bool flag=true;
 	if ((size!=q.size)||(start!=q.start)||(end!=q.end)) flag=false;
 	else 
-		for (int i=0; i<size; i++)
+		for (size_t i=0; i<size; i++)
 			if (data[i]!=q.data[i]) { flag=false; break; };
     return flag;
 	};
@@ -246,4 +247,51 @@ public:
     { 
       return !(*this==q);
     };
+};
+
+template <class T>
+class QueueTwoStack
+{
+private:
+	Stack <T> s1, s2;
+public:
+	QueueTwoStack() {};
+	QueueTwoStack(int n) {Stack <T> s1(n); Stack <T> s2(n);};
+	QueueTwoStack(const QueueTwoStack& q) {Stack <T> s1(q.s1); Stack <T> s2(q.s2);};
+	~QueueTwoStack() {s1.~Stack(); s2.~Stack();};
+	void push(T elem) 
+	{	
+		if (s1.GetSize()==s1.GetCapacity())
+			{
+				s1.push(elem);
+		        s2.resize(s1.GetCapacity());
+		}
+		else s1.push(elem);
+	};
+	void pop() {
+		if (s2.empty()==true)
+			while (s1.empty()!=true)
+			{
+				s2.push(s1.top());
+				s1.pop();
+			};
+		s2.pop();
+	};
+	bool empty() { 
+		if ((s1.empty()==true)&&(s2.empty()==true)) return true;
+		else return false;
+	};
+	bool full() {
+		if (s1.full()==true) return true;
+		else return false;
+	};
+	void resize(size_t s)
+	{
+		s1.resize(s);
+		s2.resize(s);
+	}
+	size_t GetSize()
+	{
+		return (s1.GetSize()+s2.GetSize());
+	};
 };
