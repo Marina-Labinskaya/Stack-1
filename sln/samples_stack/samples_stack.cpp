@@ -47,7 +47,7 @@ bool are_brackets_good(const std::string &str)
 
 int main(int argc, char** argv)
 {
-	std::cout<<are_brackets_good(argv[0])<<std::endl;
+	std::cout<<are_brackets_good(argv[1])<<std::endl;
 	return 0;
 }
 
